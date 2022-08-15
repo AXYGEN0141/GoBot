@@ -11,7 +11,7 @@ const (
 )
 
 func main() {
-	tgClient = telegram.New(thBotHost, mustToken())
+	tgClient := telegram.New(tgBotHost, mustToken())
 }
 
 func mustToken() string {
