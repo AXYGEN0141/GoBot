@@ -18,8 +18,6 @@ type Storage struct {
 
 const defaultPerm = 0774
 
-var ErrNoSaved = errors.New("no saved page")
-
 func New(basePath string) Storage {
 	return Storage{basePath: basePath}
 }
@@ -63,7 +61,7 @@ func (s Storage) PickRandom(UserName string) (page *storage.Page, err error) {
 	}
 
 	if len(files) == 0 {
-		return nil, ErrNoSaved
+		return nil, storage.ErrNoSavedPages
 	}
 
 	rand.Seed(time.Now().UnixNano())
@@ -85,6 +83,7 @@ func (s Storage) Remove(p *storage.Page) error {
 
 	if err := os.RemoveAll(path); err != nil {
 		msg := fmt.Sprintf("can't remove file %s", path)
+
 		return e.Wrap(msg, err)
 	}
 
@@ -116,6 +115,7 @@ func (s Storage) decodePage(filePath string) (*storage.Page, error) {
 	if err != nil {
 		return nil, e.Wrap("can't decode page", err)
 	}
+
 	defer func() { _ = f.Close() }()
 
 	var p storage.Page
